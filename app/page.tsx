@@ -5,12 +5,14 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import Image from "next/image";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
+	const scope = useRef<HTMLDivElement>(null);
+
 	useEffect(() => {
 		const lenis = new Lenis();
 
@@ -23,9 +25,8 @@ export default function Home() {
 		requestAnimationFrame(raf);
 	}, []);
 
-	useLayoutEffect(() => {
-		const context = gsap.context(() => {
-			const tl = gsap.timeline();
+	useGSAP(() => {
+		const tl = gsap.timeline();
 			tl.from("ol li", {
 				y: 50,
 				opacity: 0,
@@ -45,14 +46,11 @@ export default function Home() {
 					stagger: 0.2,
 					ease: "power1.inOut",
 				});
-		});
-
-		return context.revert;
-	}, []);
+	}, {scope });
 
 	return (
 		<>
-			<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+			<div ref={scope} className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 				<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
 					<Image
 						className="dark:invert"
